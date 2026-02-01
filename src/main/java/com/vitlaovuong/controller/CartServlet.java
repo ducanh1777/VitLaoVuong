@@ -32,11 +32,11 @@ public class CartServlet extends HttpServlet {
 
         if (action.equals("add")) {
             int pid = Integer.parseInt(request.getParameter("pid"));
-            int quantity = 1;
+            double quantity = 1.0;
             try {
-                quantity = Integer.parseInt(request.getParameter("quantity"));
+                quantity = Double.parseDouble(request.getParameter("quantity"));
             } catch (NumberFormatException e) {
-                quantity = 1;
+                quantity = 1.0;
             }
 
             Product product = pDao.getProductById(pid);
@@ -66,7 +66,7 @@ public class CartServlet extends HttpServlet {
             return;
         } else if (action.equals("update")) {
             int pid = Integer.parseInt(request.getParameter("pid"));
-            int quantity = Integer.parseInt(request.getParameter("quantity"));
+            double quantity = Double.parseDouble(request.getParameter("quantity"));
             cart.updateQuantity(pid, quantity);
             response.sendRedirect("cart");
             return;

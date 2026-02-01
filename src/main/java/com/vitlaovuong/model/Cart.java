@@ -28,7 +28,7 @@ public class Cart {
         items.removeIf(item -> item.getProductId() == productId);
     }
 
-    public void updateQuantity(int productId, int quantity) {
+    public void updateQuantity(int productId, double quantity) {
         for (OrderDetail item : items) {
             if (item.getProductId() == productId) {
                 item.setQuantity(quantity);
@@ -45,8 +45,8 @@ public class Cart {
         return total;
     }
 
-    public int getTotalQuantity() {
-        int total = 0;
+    public double getTotalQuantity() {
+        double total = 0;
         for (OrderDetail item : items) {
             total += item.getQuantity();
         }

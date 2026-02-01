@@ -27,23 +27,36 @@
                                     </c:choose>
                                 </div>
                                 <div class="product-info">
-                                    <h3>${p.name}</h3>
-                                    <p>${p.description}</p>
-                                    <fmt:formatNumber value="${p.price}" pattern="#,###" /> ₫
-                                    </span>
+                                    <h3 style="font-size: 18px; margin-bottom: 10px;">${p.name}</h3>
+                                    <div style="margin-bottom: 15px;">
+                                        <c:choose>
+                                            <c:when test="${p.salePrice > 0 && p.salePrice < p.price}">
+                                                <p
+                                                    style="color: #d32f2f; font-weight: bold; font-size: 16px; display: inline-block; margin-right: 10px;">
+                                                    <fmt:formatNumber value="${p.salePrice}" pattern="#,###" />₫
+                                                </p>
+                                                <p
+                                                    style="color: #888; text-decoration: line-through; display: inline-block;">
+                                                    <fmt:formatNumber value="${p.price}" pattern="#,###" />₫
+                                                </p>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <p style="color: #d32f2f; font-weight: bold; font-size: 16px;">
+                                                    <fmt:formatNumber value="${p.price}" pattern="#,###" />₫
+                                                </p>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
                                     <div
                                         style="margin-bottom: 10px; font-size: 13px; color: ${p.quantity > 0 ? '#166534' : '#991b1b'};">
-                                        ${p.quantity > 0 ? 'Còn hàng: ' : 'Hết hàng'} ${p.quantity > 0 ? p.quantity :
-                                        ''}
+                                        ${p.quantity > 0 ? 'Còn hàng: ' : 'Hết hàng'}
+                                        <c:if test="${p.quantity > 0}">
+                                            <fmt:formatNumber value="${p.quantity}" pattern="#,###.##" />
+                                        </c:if>
                                     </div>
-                                    <c:choose>
-                                        <c:when test="${p.quantity > 0}">
-                                            <a href="menu" class="btn">Xem Thêm</a>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <a href="menu" class="btn" style="background: #ccc;">Xem Thêm</a>
-                                        </c:otherwise>
-                                    </c:choose>
+                                    <a href="menu?cid=${p.categoryId}#product-${p.id}" class="btn"
+                                        style="width: 100%; display: block; text-align: center;">Đặt
+                                        Ngay</a>
                                 </div>
                             </div>
                         </c:forEach>

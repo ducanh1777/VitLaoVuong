@@ -56,7 +56,7 @@ public class OrderDAO {
                     for (OrderDetail detail : order.getDetails()) {
                         psDetail.setInt(1, orderId);
                         psDetail.setInt(2, detail.getProductId());
-                        psDetail.setInt(3, detail.getQuantity());
+                        psDetail.setDouble(3, detail.getQuantity());
                         psDetail.setDouble(4, detail.getPrice());
                         psDetail.addBatch();
                     }

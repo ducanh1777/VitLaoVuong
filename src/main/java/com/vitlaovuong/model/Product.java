@@ -7,6 +7,7 @@ public class Product {
     private double price;
     private String imageUrl;
     private int categoryId;
+    private double salePrice;
     private Category category; // Optional linkage
 
     public Product() {
@@ -64,6 +65,14 @@ public class Product {
         this.categoryId = categoryId;
     }
 
+    public double getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(double salePrice) {
+        this.salePrice = salePrice;
+    }
+
     public Category getCategory() {
         return category;
     }
@@ -72,10 +81,15 @@ public class Product {
         this.category = category;
     }
 
-    private int quantity;
+    private double quantity;
 
     public Product(int id, String name, String description, double price, String imageUrl, int categoryId,
-            int quantity) {
+            double quantity) {
+        this(id, name, description, price, imageUrl, categoryId, quantity, 0);
+    }
+
+    public Product(int id, String name, String description, double price, String imageUrl, int categoryId,
+            double quantity, double salePrice) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -83,17 +97,18 @@ public class Product {
         this.imageUrl = imageUrl;
         this.categoryId = categoryId;
         this.quantity = quantity;
+        this.salePrice = salePrice;
     }
 
     public Product(int id, String name, String description, double price, String imageUrl, int categoryId) {
         this(id, name, description, price, imageUrl, categoryId, 0);
     }
 
-    public int getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(double quantity) {
         this.quantity = quantity;
     }
 }

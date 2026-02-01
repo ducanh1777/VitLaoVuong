@@ -69,9 +69,16 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label>Giảm giá (%) - Nhập 0 nếu không giảm</label>
+                                    <input type="number" name="discountPercent" class="form-control"
+                                        value="${product != null && product.salePrice > 0 ? (100 - (product.salePrice * 100 / product.price)).intValue() : 0}"
+                                        required min="0" max="100">
+                                </div>
+
+                                <div class="form-group">
                                     <label>Số lượng tồn kho</label>
                                     <input type="number" name="quantity" class="form-control"
-                                        value="${product.quantity}" required min="0">
+                                        value="${product.quantity}" required min="0" step="0.1">
                                 </div>
 
                                 <div class="form-group">
@@ -105,6 +112,7 @@
                                         <th>Hình</th>
                                         <th>Tên Món</th>
                                         <th>Giá</th>
+                                        <th>Giá KM</th>
                                         <th>Số Lượng</th>
                                         <th>Thao Tác</th>
                                     </tr>
@@ -129,12 +137,22 @@
                                             <td>
                                                 <fmt:formatNumber value="${p.price}" pattern="#,###" /> ₫
                                             </td>
-                                            <td>${p.quantity}</td>
+                                            <td>
+                                                <c:if test="${p.salePrice > 0}">
+                                                    <fmt:formatNumber value="${p.salePrice}" pattern="#,###" /> ₫
+                                                </c:if>
+                                                <c:if test="${p.salePrice == 0}">
+                                                    -
+                                                </c:if>
+                                            </td>
+                                            <td>
+                                                <fmt:formatNumber value="${p.quantity}" pattern="#,###.##" />
+                                            </td>
                                             <td>
                                                 <a href="products?action=edit&id=${p.id}" class="btn-secondary"
                                                     style="padding: 5px 10px; border-radius: 4px; font-size: 12px; margin-right: 5px;"><i
                                                         class="fas fa-edit"></i></a>
-                                                <a href="products?action=delete&id=${p.id}" class="btn"
+                                                <a href="products?action=delete&id=${p.id}&page=${index}" class="btn"
                                                     style="padding: 5px 10px; border-radius: 4px; font-size: 12px; background: #991b1b;"
                                                     onclick="return confirm('Bạn chắc chắn muốn xóa món này?');"><i
                                                         class="fas fa-trash"></i></a>

@@ -31,13 +31,46 @@ public class AdminProductServlet extends HttpServlet {
         CategoryDAO cDao = new CategoryDAO();
 
         String action = request.getParameter("action");
-        String message = "";
+        String message = request.getParameter("message");
+        if (message != null) {
+            try {
+                message = java.net.URLDecoder.decode(message, "UTF-8");
+            } catch (Exception e) {
+                message = "";
+            }
+        } else {
+            message = "";
+        }
 
         try {
             if ("delete".equals(action)) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 pDao.deleteProduct(id);
-                message = "Xoa san pham thanh cong!";
+
+                // Lay trang hien tai tu tham so
+                int pageToDelete = 1;
+                try {
+                    pageToDelete = Integer.parseInt(request.getParameter("page"));
+                } catch (Exception e) {
+                }
+
+                // Tinh toan lai so trang sau khi xoa
+                int count = pDao.count();
+                int pageSize = 5;
+                int endPage = count / pageSize;
+                if (count % pageSize != 0) {
+                    endPage++;
+                }
+
+                // Neu trang hien tai lon hon tong so trang (vi du xoa mon cuoi cung cua trang),
+                // lui ve trang truoc
+                if (pageToDelete > endPage && endPage > 0) {
+                    pageToDelete = endPage;
+                }
+
+                String msg = java.net.URLEncoder.encode("Xóa sản phẩm thành công!", "UTF-8");
+                response.sendRedirect("products?page=" + pageToDelete + "&message=" + msg);
+                return;
             } else if ("edit".equals(action)) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 Product p = pDao.getProductById(id);
@@ -129,10 +162,23 @@ public class AdminProductServlet extends HttpServlet {
             }
 
             String qtyStr = request.getParameter("quantity");
-            int quantity = 0;
+            String salePriceStr = request.getParameter("salePrice"); // Keep for backward compat if any, but mainly use
+                                                                     // discountPercent
+            String discountPercentStr = request.getParameter("discountPercent");
+            double quantity = 0;
+            double salePrice = 0;
             try {
                 if (qtyStr != null && !qtyStr.isEmpty()) {
-                    quantity = Integer.parseInt(qtyStr);
+                    quantity = Double.parseDouble(qtyStr);
+                }
+                if (discountPercentStr != null && !discountPercentStr.isEmpty()) {
+                    int discountPercent = Integer.parseInt(discountPercentStr);
+                    if (discountPercent > 0) {
+                        salePrice = price * (100 - discountPercent) / 100.0;
+                    }
+                } else if (salePriceStr != null && !salePriceStr.isEmpty()) {
+                    // Fallback just in case
+                    salePrice = Double.parseDouble(salePriceStr);
                 }
             } catch (Exception e) {
             }
@@ -144,14 +190,29 @@ public class AdminProductServlet extends HttpServlet {
             p.setImageUrl(image);
             p.setCategoryId(catId);
             p.setQuantity(quantity);
+            p.setSalePrice(salePrice);
 
             if (idStr == null || idStr.isEmpty()) {
                 pDao.insertProduct(p);
+
+                // Tinh trang cuoi cung
+                int count = pDao.count();
+                int pageSize = 5;
+                int endPage = count / pageSize;
+                if (count % pageSize != 0) {
+                    endPage++;
+                }
+
+                String msg = java.net.URLEncoder.encode("Thêm món thành công!", "UTF-8");
+                response.sendRedirect("products?page=" + endPage + "&message=" + msg);
+                return;
             } else {
                 p.setId(Integer.parseInt(idStr));
                 pDao.updateProduct(p);
+                String msg = java.net.URLEncoder.encode("Cập nhật món thành công!", "UTF-8");
+                response.sendRedirect("products?message=" + msg);
+                return;
             }
-            response.sendRedirect("products");
 
         } catch (Exception e) {
             e.printStackTrace();

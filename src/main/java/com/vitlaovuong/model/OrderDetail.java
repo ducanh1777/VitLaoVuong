@@ -4,14 +4,14 @@ public class OrderDetail {
     private int id;
     private int orderId;
     private int productId;
-    private int quantity;
+    private double quantity;
     private double price;
     private Product product; // linkage
 
     public OrderDetail() {
     }
 
-    public OrderDetail(int productId, int quantity, double price) {
+    public OrderDetail(int productId, double quantity, double price) {
         this.productId = productId;
         this.quantity = quantity;
         this.price = price;
@@ -41,11 +41,11 @@ public class OrderDetail {
         this.productId = productId;
     }
 
-    public int getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(double quantity) {
         this.quantity = quantity;
     }
 

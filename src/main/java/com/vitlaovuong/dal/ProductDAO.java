@@ -14,7 +14,15 @@ public class ProductDAO {
         try {
             return rs.getInt(column);
         } catch (Exception e) {
-            return 100; // Default if column missing
+            return 0; // Default
+        }
+    }
+
+    private double getSafeDouble(ResultSet rs, String column) {
+        try {
+            return rs.getDouble(column);
+        } catch (Exception e) {
+            return 0.0; // Default
         }
     }
 
@@ -32,7 +40,8 @@ public class ProductDAO {
                         rs.getDouble("price"),
                         rs.getString("image_url"),
                         rs.getInt("category_id"),
-                        getSafeInt(rs, "quantity"));
+                        getSafeDouble(rs, "quantity"),
+                        getSafeDouble(rs, "sale_price"));
                 list.add(p);
             }
         } catch (Exception e) {
@@ -56,7 +65,8 @@ public class ProductDAO {
                             rs.getDouble("price"),
                             rs.getString("image_url"),
                             rs.getInt("category_id"),
-                            getSafeInt(rs, "quantity")));
+                            getSafeDouble(rs, "quantity"),
+                            getSafeDouble(rs, "sale_price")));
                 }
             }
         } catch (Exception e) {
@@ -98,7 +108,8 @@ public class ProductDAO {
                             rs.getDouble("price"),
                             rs.getString("image_url"),
                             rs.getInt("category_id"),
-                            getSafeInt(rs, "quantity")));
+                            getSafeDouble(rs, "quantity"),
+                            getSafeDouble(rs, "sale_price")));
                 }
             }
         } catch (Exception e) {
@@ -122,7 +133,8 @@ public class ProductDAO {
                         rs.getDouble("price"),
                         rs.getString("image_url"),
                         rs.getInt("category_id"),
-                        getSafeInt(rs, "quantity"));
+                        getSafeDouble(rs, "quantity"),
+                        getSafeDouble(rs, "sale_price"));
                 list.add(p);
             }
         } catch (Exception e) {
@@ -163,7 +175,8 @@ public class ProductDAO {
                         rs.getDouble("price"),
                         rs.getString("image_url"),
                         rs.getInt("category_id"),
-                        getSafeInt(rs, "quantity")));
+                        getSafeDouble(rs, "quantity"),
+                        getSafeDouble(rs, "sale_price")));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -173,7 +186,7 @@ public class ProductDAO {
 
     // ADMIN: Them san pham moi
     public void insertProduct(Product p) throws Exception {
-        String sql = "INSERT INTO Products (name, description, price, image_url, category_id, quantity) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Products (name, description, price, image_url, category_id, quantity, sale_price) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBContext.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, p.getName());
@@ -181,14 +194,15 @@ public class ProductDAO {
             ps.setDouble(3, p.getPrice());
             ps.setString(4, p.getImageUrl());
             ps.setInt(5, p.getCategoryId());
-            ps.setInt(6, p.getQuantity());
+            ps.setDouble(6, p.getQuantity());
+            ps.setDouble(7, p.getSalePrice());
             ps.executeUpdate();
         }
     }
 
     // ADMIN: Cap nhat san pham
     public void updateProduct(Product p) throws Exception {
-        String sql = "UPDATE Products SET name=?, description=?, price=?, image_url=?, category_id=?, quantity=? WHERE id=?";
+        String sql = "UPDATE Products SET name=?, description=?, price=?, image_url=?, category_id=?, quantity=?, sale_price=? WHERE id=?";
         try (Connection conn = DBContext.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, p.getName());
@@ -196,8 +210,9 @@ public class ProductDAO {
             ps.setDouble(3, p.getPrice());
             ps.setString(4, p.getImageUrl());
             ps.setInt(5, p.getCategoryId());
-            ps.setInt(6, p.getQuantity());
-            ps.setInt(7, p.getId());
+            ps.setDouble(6, p.getQuantity());
+            ps.setDouble(7, p.getSalePrice());
+            ps.setInt(8, p.getId());
             ps.executeUpdate();
         }
     }
@@ -227,7 +242,8 @@ public class ProductDAO {
                             rs.getDouble("price"),
                             rs.getString("image_url"),
                             rs.getInt("category_id"),
-                            getSafeInt(rs, "quantity"));
+                            getSafeInt(rs, "quantity"),
+                            getSafeDouble(rs, "sale_price"));
                 }
             }
         } catch (Exception e) {

@@ -20,7 +20,7 @@ public class HomeServlet extends HttpServlet {
         ProductDAO pDao = new ProductDAO();
         CategoryDAO cDao = new CategoryDAO();
 
-        List<Product> products = pDao.getAllProducts(); // Load all for now
+        List<Product> products = pDao.getFeaturedProducts(); // Only top 3 featured
         List<Category> categories = cDao.getAllCategories();
 
         request.setAttribute("products", products);
