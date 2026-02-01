@@ -14,26 +14,19 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "SetupServlet", urlPatterns = { "/setup" })
 public class SetupServlet extends HttpServlet {
 
-        // Thông tin kết nối MySQL gốc (không chỉ định DB cụ thể để có thể tạo DB)
-        private static final String ROOT_URL = "jdbc:mysql://localhost:3306/?useUnicode=true&characterEncoding=UTF-8";
-        private static final String USER = "root";
-        private static final String PASS = "123456";
-
         protected void processRequest(HttpServletRequest request, HttpServletResponse response)
                         throws ServletException, IOException {
                 response.setContentType("text/html;charset=UTF-8");
                 try {
-                        Class.forName("com.mysql.cj.jdbc.Driver");
-
-                        try (Connection conn = DriverManager.getConnection(ROOT_URL, USER, PASS);
+                        // Get connection from DBContext (handles Env Vars automatically)
+                        // Note: DBContext.getConnection() returns a connection to the specific DB
+                        // defined in URL
+                        try (Connection conn = com.vitlaovuong.config.DBContext.getConnection();
                                         Statement stmt = conn.createStatement()) {
 
-                                // 1. Tạo Database nếu chưa có
-                                stmt.executeUpdate(
-                                                "CREATE DATABASE IF NOT EXISTS vitlaovuong_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-                                stmt.executeUpdate("USE vitlaovuong_db");
+                                // 1. Skip CREATE DATABASE (Assume we are using the DB from Connection URL)
 
-                                // 2. Tắt kiểm tra khóa ngoại để reset bảng
+                                // 2. Disable foreign key checks
                                 stmt.executeUpdate("SET FOREIGN_KEY_CHECKS=0");
 
                                 // 3. Xóa và Tạo lại bảng Categories
