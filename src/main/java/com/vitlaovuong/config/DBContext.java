@@ -10,7 +10,21 @@ public class DBContext {
     private static final String PASS = "123456"; // Thu lai mat khau 123456
 
     public static Connection getConnection() throws ClassNotFoundException, SQLException {
+        String dbUrl = System.getenv("DB_URL");
+        String dbUser = System.getenv("DB_USER");
+        String dbPass = System.getenv("DB_PASS");
+
+        if (dbUrl == null || dbUrl.isEmpty()) {
+            dbUrl = URL;
+        }
+        if (dbUser == null || dbUser.isEmpty()) {
+            dbUser = USER;
+        }
+        if (dbPass == null || dbPass.isEmpty()) {
+            dbPass = PASS;
+        }
+
         Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(URL, USER, PASS);
+        return DriverManager.getConnection(dbUrl, dbUser, dbPass);
     }
 }
